@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Színözön</title>
+    <link rel="stylesheet" href="szinozon.css">
+</head>
+<body>
+
+<div class="jatek-tarolo">
+    <h1>-   Színözön 3.3   -</h1>
+    <div id="gombok" class="gomb-tarolo">
+        <div class="szin-gomb piros" data-szin="piros"></div>
+        <div class="szin-gomb zold" data-szin="zold"></div>
+        <div class="szin-gomb kek" data-szin="kek"></div>
+        <div class="szin-gomb sarga" data-szin="sarga"></div>
+    </div>
+    <div id="uzenet" class="uzenet">Hajrá!</div>
+</div>
+
+<div class="lablec">
+    <p>Dizájnolta - <a href="https://preview.redd.it/lssl0gk0ylk61.jpg?width=640&crop=smart&auto=webp&s=c35741762cb122fe79847eb45b222ed7bec291c4" target="_blank">Tóth Regina & Sarka Levente</a></p>
+</div>
+
+<script>
+    const szinek = ['piros', 'zold', 'kek', 'sarga']; 
+    let jatekSorozat = []; 
+    let jatekosSorozat = []; 
+    let szint = 0; 
+
+    const uzenetElem = document.getElementById('uzenet');
+    const szinGombok = document.querySelectorAll('.szin-gomb');
+    
+    
+    szinGombok.forEach(gomb => {
+        gomb.addEventListener('click', (e) => {
+            const kivalasztottSzin = e.target.getAttribute('data-szin');
+            jatekosSorozat.push(kivalasztottSzin);
+            ellenorizJatekosLepes(kivalasztottSzin);
+        });
+    });
+
+    
+    function inditJatek() {
+        jatekSorozat = [];
+        jatekosSorozat = [];
+        szint = 1;
+        uzenetElem.textContent = 'Jó játékot!';
+        hozzaadUjSzint();
+    }
+
+
+    function hozzaadUjSzint() {
+        const veletlenSzin = szinek[Math.floor(Math.random() * szinek.length)];
+        jatekSorozat.push(veletlenSzin);
+        megjelenitSorozat();
+    }
+
+    function megjelenitSorozat() {
+        let i = 0;
+        const idozito = setInterval(() => {
+            const szin = jatekSorozat[i];
+            villantSzin(szin);
+            i++;
+            if (i === jatekSorozat.length) {
+                clearInterval(idozito);
+            }
+        }, 600);
+    }
+
+   
+    function villantSzin(szin) {
+        valtoztatHatterSzin(szin);
+        setTimeout(() => {
+            document.body.style.transition = "background-color 0.5s ease";
+            document.body.style.backgroundColor = '#222'; 
+        }, 450); 
+    }
+
+    function valtoztatHatterSzin(szin) {
+        const szinKod = {
+            piros: '#e74c3c',
+            zold: '#2ecc71',
+            kek: '#3498db',
+            sarga: '#f1c40f'
+        };
+        document.body.style.transition = "background-color 0.5s ease";
+        document.body.style.backgroundColor = szinKod[szin];
+    }
+
+    function ellenorizJatekosLepes(szin) {
+        const aktualisIndex = jatekosSorozat.length - 1;
+
+        if (szin === jatekSorozat[aktualisIndex]) {
+            if (jatekosSorozat.length === jatekSorozat.length) {
+                szint++;
+                jatekosSorozat = [];
+                uzenetElem.textContent = `HELYES! Szint: ${szint}`;
+                setTimeout(() => {
+                    hozzaadUjSzint();
+                }, 1000);
+            }
+        } else {
+            uzenetElem.textContent = `HIBÁS! Elérted a ${szint}. szintet!`;
+            szint = 0;
+            setTimeout(() => {
+                inditJatek();
+            }, 2000); 
+        }
+    }
+
+    
+    inditJatek();
+</script>
+
+</body>
+</html>
